@@ -1,0 +1,98 @@
+TASK 1
+
+SELECT Customer, SUM(amount) 
+FROM SPEND
+GROUP BY Customer
+order by customer
+
+TASK 2
+
+SELECT Customer, SUM(amount) 
+FROM REPAYMENT
+GROUP BY Customer
+order by customer
+
+TASK 3
+
+SELECT customer, 
+       SUM(amount) AS total_repayment
+FROM repayment
+GROUP BY customer
+ORDER BY total_repayment DESC
+LIMIT 10;
+
+TASK 4
+
+SELECT c.segment, 
+       SUM(s.amount) AS total_spend
+FROM spend s
+JOIN customer c ON s.customer = c.customer
+GROUP BY c.segment
+ORDER BY total_spend DESC;
+
+TASK 5
+
+SELECT 
+    c.Age AS Age_Group, 
+    SUM(s.Amount) AS Total_Spending
+FROM 
+    SPEND s
+JOIN 
+    CUSTOMER c ON s.Customer = c.Customer
+GROUP BY 
+    c.Age
+ORDER BY 
+    Total_Spending DESC;
+
+
+TASK 6
+
+SELECT c.segment, 
+       (SUM(s.amount) - SUM(r.amount)) AS profit
+FROM spend s
+JOIN customer c ON s.customer = c.customer
+JOIN repayment r ON s.customer = r.customer
+GROUP BY c.segment
+ORDER BY profit DESC;
+
+TASK 7
+
+SELECT TYPE, 
+       SUM(amount) AS total_spend
+FROM spend
+GROUP BY TYPE
+ORDER BY total_spend DESC;
+
+TASK 8
+
+SELECT 
+    s.Customer, 
+    s.Month, 
+    s.Amount AS SpendAmount, 
+    COALESCE(r.Amount, 0) AS RepaymentAmount,
+    (s.Amount - COALESCE(r.Amount, 0)) * 0.029 AS Interest
+FROM 
+    SPEND s
+LEFT JOIN 
+    REPAYMENT r 
+ON 
+    s.Customer = r.Customer 
+    AND s.Month = r.Month
+WHERE 
+    s.Amount > COALESCE(r.Amount, 0);
+
+TASK 9
+
+SELECT 
+    R.Month,
+    (SUM(R.Amount) - COALESCE(SUM(S.Amount), 0)) AS Monthly_Profit
+FROM 
+    REPAYMENT R
+LEFT JOIN 
+    SPEND S 
+ON 
+    R.Month = S.Month AND R.Customer = S.Customer
+GROUP BY 
+    R.Month
+ORDER BY 
+    R.Month;
